@@ -1,0 +1,40 @@
+{
+  "name": "codex-backend",
+  "version": "1.0.0",
+  "description": "Backend API for CodeX AI-powered learning platform",
+  "main": "server.js",
+"scripts": {
+  "start": "node codex_server.js",
+  "dev": "nodemon codex_server.js",
+  "seed": "node seed.js",
+  "test": "jest"
+},
+  "keywords": [
+    "education",
+    "ai",
+    "adaptive-learning",
+    "assessment",
+    "api"
+  ],
+  "author": "CodeX Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.0",
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^6.1.0",
+    "express-validator": "^6.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

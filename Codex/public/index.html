@@ -1,0 +1,358 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeX - AI-Powered Learning Platform</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <!-- Background Elements Container -->
+  <div class="background-elements-container">
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+  </div>
+
+  <div id="modal-container"></div>
+
+  <main id="main-content">
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <div class="nav">
+          <a href="#" class="logo">CodeX</a>
+          <ul class="nav-links">
+            <!--   <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>-->
+            <div class="auth-buttons">
+              <button class="btn btn-ghost" onclick="showAuthModal('login')">Login</button>
+              <button class="btn" onclick="showAuthModal('signup')">Get Started</button>
+            </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="hero-title">A New Era of Personalized Learning</h1>
+          <p class="hero-subtitle">
+            CodeX goes beyond traditional testing to discover your unique learning style. Our AI-powered adaptive assessments and personalized practice help you master any subject with confidence.
+          </p>
+          <div class="hero-buttons">
+            <button class="btn btn-secondary" onclick="showAuthModal('signup')">
+              🚀 Start Your Journey Free
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="features-header">
+          <h2 class="features-title">Why Choose CodeX?</h2>
+          <p class="features-subtitle">
+            Our platform is engineered to provide a deeply personalized learning experience, empowering students, teachers, and parents with actionable insights.
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card glass-card">
+            <div class="feature-icon">🎯</div>
+            <h3 class="feature-title">Adaptive Assessment</h3>
+            <p class="feature-description">
+              Our AI ensures every test adapts to you. Questions get easier or harder in real-time, pinpointing your exact knowledge level.
+            </p>
+          </div>
+          <div class="feature-card glass-card">
+            <div class="feature-icon">🧠</div>
+            <h3 class="feature-title">Deep Learning Analytics</h3>
+            <p class="feature-description">
+              We analyze your performance to identify specific gaps in understanding, retention, and application, turning data into a clear path for improvement.
+            </p>
+          </div>
+          <div class="feature-card glass-card">
+            <div class="feature-icon">📊</div>
+            <h3 class="feature-title">Actionable Reports</h3>
+            <p class="feature-description">
+              Receive detailed, easy-to-understand reports for students, parents, and teachers, highlighting strengths and areas for growth.
+            </p>
+          </div>
+          <div class="feature-card glass-card">
+            <div class="feature-icon">🎓</div>
+            <h3 class="feature-title">Personalized Learning</h3>
+            <p class="feature-description">
+              Our AI creates custom learning paths that target your specific needs, making your study time more effective than ever.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta" id="contact">
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">Ready to Unlock Your Potential?</h2>
+          <p class="cta-subtitle">
+            Join thousands of learners who are transforming their education. Sign up today and take the first step towards academic excellence.
+            <!--   </p>
+          <div class="cta-buttons">
+            <button class="btn btn-secondary" onclick="showAuthModal('signup')">
+              🎯 Start Free Trial
+            </button>
+          </div>-->
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>CodeX</h3>
+            <p>AI-powered adaptive learning for the next generation of students.</p>
+          </div>
+          <div class="footer-section">
+            <h3>Offerings</h3>
+            <p><a href="#features">Features</a></p>
+            <p><a href="#">Pricing</a></p>
+            <p><a href="#">Materials</a></p>
+          </div>
+          <div class="footer-section">
+            <h3>Company</h3>
+            <p><a href="#contact">Contact</a></p>
+          </div>
+          <div class="footer-bottom">
+            <p>&copy; 2025 CodeX Learning. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Hidden containers for different application views -->
+  <section id="student-dashboard" class="hidden-section">
+    <div class="container">
+      <div class="dashboard-header">
+        <h1>Welcome, <span id="student-name-display"></span>!</h1>
+        <p class="dashboard-subtitle">Ready to continue your learning journey?</p>
+        <button class="btn btn-ghost logout-btn" onclick="logout()">Logout</button>
+      </div>
+      <div class="dashboard-grid">
+        <div class="profile-card glass-card">
+          <h3>📊 Your Learning Profile</h3>
+          <div class="profile-info">
+            <div class="profile-item">
+              <span class="profile-label">Grade:</span>
+              <span id="profile-grade"></span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">School:</span>
+              <span id="profile-school"></span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">Learning Style:</span>
+              <span id="profile-learning-style">Visual Learner</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="subjects-card glass-card">
+          <h3>📚 Available Skills</h3>
+          <div id="subject-selection-list">
+            <!-- Skill buttons will be generated here by JS -->
+          </div>
+        </div>
+
+        <div class="progress-card glass-card">
+          <h3>📈 Recent Performance</h3>
+          <div id="recent-tests">
+            <p class="no-tests">Take your first test to see your progress!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="teacher-dashboard" class="hidden-section">
+    <div class="container">
+      <div class="dashboard-header">
+        <h1>Teacher Dashboard</h1>
+        <p class="dashboard-subtitle">Welcome, <span id="teacher-name-display"></span></p>
+        <button class="btn btn-ghost logout-btn" onclick="logout()">Logout</button>
+      </div>
+      <div class="teacher-dashboard-grid">
+        <div class="teacher-summary-card glass-card">
+          <h3>👥 Class Overview</h3>
+          <div class="class-stats">
+            <div class="stat-item">
+              <div class="stat-number" id="total-students">0</div>
+              <div class="stat-label">Total Students</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" id="active-tests">0</div>
+              <div class="stat-label">Active Tests</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" id="avg-performance">0%</div>
+              <div class="stat-label">Avg Performance</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="student-list-card glass-card">
+          <h3>📋 Student Performance</h3>
+          <div id="teacher-student-list">
+            <!-- Student performance list will be generated here -->
+          </div>
+        </div>
+
+        <div class="teacher-actions-card glass-card">
+          <h3>🛠️ Quick Actions</h3>
+          <button class="btn" onclick="createNewTest()">Create New Test</button>
+          <button class="btn btn-outline" onclick="viewAllReports()">View All Reports</button>
+          <button class="btn btn-ghost" onclick="exportData()">Export Data</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="parent-dashboard" class="hidden-section">
+    <div class="container">
+      <div class="dashboard-header">
+        <h1>Parent Dashboard</h1>
+        <p class="dashboard-subtitle">Monitor <span id="child-name-display"></span>'s Progress</p>
+        <button class="btn btn-ghost logout-btn" onclick="logout()">Logout</button>
+      </div>
+      <div class="parent-dashboard-grid">
+        <div class="child-progress-card glass-card">
+          <h3>📈 Child's Academic Progress</h3>
+          <canvas id="parent-progress-chart"></canvas>
+        </div>
+
+        <div class="child-subjects-card glass-card">
+          <h3>📚 Skill Performance</h3>
+          <div id="parent-child-subjects">
+            <!-- Child's skill performance will be shown here -->
+          </div>
+        </div>
+
+        <div class="parent-insights-card glass-card">
+          <h3>💡 Learning Insights</h3>
+          <div id="parent-insights">
+            <p>Your child shows strong performance in analytical thinking and problem-solving.</p>
+            <p><strong>Recommendation:</strong> Consider advanced quantitative courses.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="assessment-view" class="hidden-section">
+    <div class="container">
+      <div class="assessment-header">
+        <h1>Assessment</h1>
+        <div class="assessment-info">
+          <span id="current-subject"></span> • Question <span id="current-question">1</span> of <span id="total-questions">10</span>
+        </div>
+      </div>
+      <div class="assessment-card glass-card fade-in">
+        <div id="question-container">
+          <!-- Question text and difficulty will be generated here by JS -->
+        </div>
+        <div id="options-container">
+          <!-- Option buttons will be generated here by JS -->
+        </div>
+        <div class="assessment-navigation">
+          <button class="btn btn-ghost" onclick="previousQuestion()" id="prev-btn" disabled>Previous</button>
+          <button class="btn" onclick="nextQuestion()" id="next-btn">Next</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="report-view" class="hidden-section">
+    <div class="container">
+      <div class="report-header">
+        <h1>Test Report</h1>
+        <p class="report-subject" id="report-subject-display"></p>
+      </div>
+      <div class="report-grid">
+        <div class="report-scorecard glass-card">
+          <h3>📊 Your Results</h3>
+          <div class="scorecard-grid">
+            <div class="scorecard-item">
+              <div class="label">Score</div>
+              <div class="value" id="report-score">0</div>
+            </div>
+            <div class="scorecard-item">
+              <div class="label">Accuracy</div>
+              <div class="value" id="report-accuracy">0%</div>
+            </div>
+            <div class="scorecard-item">
+              <div class="label">Grade</div>
+              <div class="value" id="report-grade">-</div>
+            </div>
+            <div class="scorecard-item">
+              <div class="label">Time</div>
+              <div class="value" id="report-time">0 min</div>
+            </div>
+          </div>
+          <button class="btn" onclick="backToDashboard()" style="width: 100%; margin-top: 1rem;">Back to Dashboard</button>
+          <button class="btn btn-outline" onclick="retakeTest()" style="width: 100%; margin-top: 0.5rem;">Retake Test</button>
+        </div>
+
+        <div class="report-analysis-card glass-card">
+          <h3>📈 Performance Analysis</h3>
+          <canvas id="report-chart"></canvas>
+        </div>
+
+        <div class="report-feedback-card glass-card" style="grid-column: 1 / -1;">
+          <h3>🤖 AI-Powered Feedback</h3>
+          <div id="report-feedback-content">
+            <!-- AI feedback will be generated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- AI Chatbot -->
+<div id="ai-chatbot-container">
+  <div id="ai-chatbot-toggle" onclick="toggleChatbot()">
+    <div class="brain-icon">🧠</div>
+  </div>
+  <div id="ai-chatbot-window" class="hidden">
+    <div class="chatbot-header">
+      <h4>AI Learning Assistant</h4>
+      <button onclick="toggleChatbot()" class="chatbot-close">&times;</button>
+    </div>
+    <div class="chatbot-messages" id="chatbot-messages">
+      <div class="bot-message">
+        <div class="message-content">Hello! I'm your AI Learning Assistant. How can I help you learn something new or clarify a topic today?</div>
+      </div>
+    </div>
+    <div id="chatbot-error" class="hidden" style="padding: 10px; color: #ef4444; font-size: 0.85rem; text-align: center;"></div>
+    <div class="chatbot-input-container">
+      <input type="text" id="chatbot-input" placeholder="Ask me anything about your studies..." onkeypress="handleChatbotEnter(event)">
+      <button onclick="sendChatbotMessage()" class="chatbot-send" id="chatbot-send-btn">Send</button>
+    </div>
+  </div>
+</div>
+  <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Learning Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* A dark fallback color */
+            /* Background image with a dark overlay to ensure text readability */
+            background-image: linear-gradient(rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.8)), url('https://images.unsplash.com/photo-1509044742250-9154397621ca?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        #chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #chat-container::-webkit-scrollbar-thumb {
+            background: #2563eb; /* Blue scrollbar handle */
+            border-radius: 3px;
+        }
+        #chat-container::-webkit-scrollbar-thumb:hover {
+            background: #1d4ed8;
+        }
+        .message-bubble {
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen">
+
+    <!-- Main chat container with glassmorphism effect -->
+    <div class="w-full max-w-2xl h-full sm:h-[90vh] flex flex-col bg-black/30 backdrop-blur-md rounded-lg border border-blue-400/50 shadow-2xl shadow-blue-500/10">
+        <!-- Header -->
+        <div class="text-white p-4 rounded-t-lg flex items-center border-b border-blue-400/50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+            <div>
+                <h1 class="text-xl font-bold text-gray-100">AI Learning Assistant</h1>
+                <p class="text-sm text-gray-300">Your personal tutor for any subject</p>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-container" class="flex-1 p-6 overflow-y-auto">
+            <!-- Initial Greeting -->
+            <div class="flex justify-start mb-4">
+                <div class="message-bubble bg-gray-700/50 text-gray-200 rounded-lg py-2 px-4">
+                    <p>Hello! I'm your AI Learning Assistant. How can I help you learn something new or clarify a topic today?</p>
+                </div>
+            </div>
+            <!-- Dynamic messages will be appended here -->
+        </div>
+
+        <!-- Message Input -->
+        <div class="p-4 border-t border-blue-400/50">
+             <div id="error-message" class="hidden text-red-400 text-sm mb-2 text-center"></div>
+            <form id="chat-form" class="flex items-center space-x-3">
+                <input type="text" id="user-input" placeholder="Ask me anything about your studies..." class="flex-1 w-full px-4 py-2 bg-gray-900/50 border border-blue-400/30 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200" autocomplete="off">
+                <button type="submit" id="send-button" class="bg-blue-500 text-white rounded-full p-3 hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200 disabled:bg-blue-500/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const errorMessageDiv = document.getElementById('error-message');
+
+        let chatHistory = [];
+
+        // System prompt to define the AI's role
+        const systemPrompt = `You are an expert AI Learning Assistant, designed to help students of all ages. Your name is 'StudyBot'.
+        Your primary goals are:
+        1.  **Clarify Doubts:** Explain complex topics in a simple, easy-to-understand manner. Use analogies and real-world examples.
+        2.  **Identify Weaknesses:** If a student seems confused about a fundamental concept, gently point it out and offer to explain it before moving on. For example, if they ask about calculus but struggle with algebra, suggest a quick algebra review.
+        3.  **Suggest Learning Approaches:** Offer different ways to learn a topic (e.g., "We can try a step-by-step explanation, an analogy, or I can quiz you. Which do you prefer?").
+        4.  **Be Encouraging and Patient:** Maintain a positive, supportive, and friendly tone. Never make the student feel bad for not knowing something. Use phrases like "Great question!", "That's a common point of confusion," or "We'll figure this out together."
+        5.  **Make Decisions:** When a student is unsure what to do next, help them decide on a learning path. Ask questions to understand their goals.
+        6.  **Keep it Conversational:** Act like a real, friendly tutor, not a machine.
+        `;
+
+        // Add system prompt to chat history initially
+        chatHistory.push({
+            role: "system",
+            parts: [{ text: systemPrompt }]
+        });
+
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userMessage = userInput.value.trim();
+
+            if (!userMessage) return;
+
+            // Add user message to chat history and UI
+            addMessageToUI('user', userMessage);
+            chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
+            
+            userInput.value = '';
+            sendButton.disabled = true;
+            errorMessageDiv.classList.add('hidden');
+
+
+            // Add loading indicator
+            const loadingIndicator = addMessageToUI('model', '...', true);
+
+            try {
+                // Call the Gemini API
+                const modelResponse = await callGeminiAPI(chatHistory);
+                
+                // Remove loading indicator
+                loadingIndicator.remove();
+                
+                addMessageToUI('model', modelResponse);
+                
+                // Add model response to history
+                chatHistory.push({ role: 'model', parts: [{ text: modelResponse }] });
+
+            } catch (error) {
+                console.error("API Error:", error);
+                loadingIndicator.remove();
+                errorMessageDiv.textContent = "Sorry, something went wrong. Please try again.";
+                errorMessageDiv.classList.remove('hidden');
+                // Optional: remove the failed user message from history
+                chatHistory.pop();
+            } finally {
+                sendButton.disabled = false;
+                userInput.focus();
+            }
+        });
+
+        function addMessageToUI(sender, message, isLoading = false) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `flex mb-4 ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+
+            const messageBubble = document.createElement('div');
+            messageBubble.className = `message-bubble rounded-lg py-2 px-4 ${sender === 'user' ? 'bg-blue-500/80 text-white' : 'bg-gray-700/50 text-gray-200'}`;
+
+            if (isLoading) {
+                 messageBubble.innerHTML = `<div class="flex items-center justify-center space-x-1">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse [animation-delay:-0.3s]"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse [animation-delay:-0.15s]"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                </div>`;
+            } else {
+                // A simple markdown-like formatter for bold text
+                message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                messageBubble.innerHTML = `<p>${message.replace(/\n/g, '<br>')}</p>`;
+            }
+            
+            messageWrapper.appendChild(messageBubble);
+            chatContainer.appendChild(messageWrapper);
+
+            // Scroll to the bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return messageWrapper;
+        }
+
+        async function callGeminiAPI(history) {
+            // NOTE: In a real-world application, you should not expose your API key like this.
+            // This is simplified for the hackathon.
+            const apiKey = "AIzaSyDfSyDPdzYdd-iksPPwppTItgq4FtnID10"; // API key is handled by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            // We only need user and model messages for the payload, not the system prompt directly in 'contents'
+            const payloadContents = history.slice(1); // Exclude system prompt from main contents
+
+            const payload = {
+                contents: payloadContents,
+                systemInstruction: { // Pass the system prompt here
+                    parts: history[0].parts
+                },
+            };
+            
+            let response;
+            let retries = 3;
+            let delay = 1000;
+
+            while(retries > 0) {
+                try {
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (response.ok) {
+                        break; // Success
+                    } else if (response.status === 429) { // Throttling
+                         console.log(`Rate limited. Retrying in ${delay / 1000}s...`);
+                    } else {
+                        throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+                    }
+
+                } catch(e) {
+                    // Network errors or other fetch issues
+                     if (retries === 1) throw e; // Last retry failed, throw error
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2; // Exponential backoff
+                retries--;
+            }
+
+
+            if (!response.ok) {
+                const errorBody = await response.text();
+                throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorBody}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.candidates && data.candidates.length > 0 && data.candidates[0].content.parts.length > 0) {
+                 return data.candidates[0].content.parts[0].text;
+            } else {
+                 // Handle cases where response might be blocked or empty
+                 return "I'm sorry, I couldn't generate a response for that. Could you please try rephrasing your question?";
+            }
+        }
+    </script>
+</body>
+</html>
